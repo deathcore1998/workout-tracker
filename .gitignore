@@ -1,0 +1,6 @@
+*.exe
+*.out
+workout-tracker
+
+# IDE
+.vscode/
