@@ -25,10 +25,11 @@ func main() {
 
 	userRepo := repositories.NewUserRepository(pool)
 	userService := services.NewUserService(userRepo)
-	userHandler := handlers.NewUserHandler(userService)
+	userHandler := handlers.NewUserHandler(userService, cfg.JWTSecret)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /register", userHandler.Register)
+	mux.HandleFunc("POST /login", userHandler.Login)
 
 	fmt.Printf("Server running on http://localhost: %s\n", cfg.ServerPort)
 	if err := http.ListenAndServe(":"+cfg.ServerPort, mux); err != nil {

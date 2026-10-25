@@ -18,7 +18,6 @@ func NewUserService(repo *repositories.UserRepository) *UserService {
 }
 
 func (s *UserService) Register(ctx context.Context, email, password, name string) (*models.User, error) {
-
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("hash password %w", err)
@@ -35,5 +34,18 @@ func (s *UserService) Register(ctx context.Context, email, password, name string
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 
+	return user, nil
+}
+
+func (s *UserService) Login(ctx context.Context, email, password string) (*models.User, error) {
+	user, err := s.repo.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, fmt.Errorf("invalid credentials")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return nil, fmt.Errorf("invalid credentials")
+	}
 	return user, nil
 }
