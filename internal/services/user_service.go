@@ -49,3 +49,7 @@ func (s *UserService) Login(ctx context.Context, email, password string) (*model
 	}
 	return user, nil
 }
+
+func (s *UserService) GetByID(ctx context.Context, id int) (*models.User, error) {
+	return s.repo.GetByID(ctx, id)
+}

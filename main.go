@@ -9,6 +9,7 @@ import (
 	"github.com/deathcore1998/workout-tracker/internal/config"
 	"github.com/deathcore1998/workout-tracker/internal/database"
 	"github.com/deathcore1998/workout-tracker/internal/handlers"
+	"github.com/deathcore1998/workout-tracker/internal/middleware"
 	"github.com/deathcore1998/workout-tracker/internal/repositories"
 	"github.com/deathcore1998/workout-tracker/internal/services"
 )
@@ -30,6 +31,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /register", userHandler.Register)
 	mux.HandleFunc("POST /login", userHandler.Login)
+
+	authMiddleware := middleware.Auth(cfg.JWTSecret)
+	mux.Handle("GET /profile", authMiddleware(http.HandlerFunc(userHandler.GetProfile)))
 
 	fmt.Printf("Server running on http://localhost: %s\n", cfg.ServerPort)
 	if err := http.ListenAndServe(":"+cfg.ServerPort, mux); err != nil {

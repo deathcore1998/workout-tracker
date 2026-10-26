@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/deathcore1998/workout-tracker/internal/auth"
+	"github.com/deathcore1998/workout-tracker/internal/middleware"
 	"github.com/deathcore1998/workout-tracker/internal/services"
 )
 
@@ -72,4 +73,22 @@ func (h *UserHandler) Login(writer http.ResponseWriter, clientData *http.Request
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(LoginResponse{Token: token})
+}
+
+func (h *UserHandler) GetProfile(writer http.ResponseWriter, clientData *http.Request) {
+	userID, ok := clientData.Context().Value(middleware.UserID).(int)
+	if !ok {
+		http.Error(writer, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	user, err := h.service.GetByID(clientData.Context(), userID)
+	if err != nil {
+		http.Error(writer, "user not found", http.StatusUnauthorized)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(user)
 }

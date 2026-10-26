@@ -23,8 +23,20 @@ func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `SELECT id, email, password, name, created_at, updated_at FROM users WHERE email = $1`
-	user := &models.User{}
 	queryRow := r.db.QueryRow(ctx, query, email)
+	user := &models.User{}
+	err := queryRow.Scan(&user.ID, &user.Email, &user.Password, &user.Name, &user.CreatedAt, &user.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*models.User, error) {
+	query := `SELECT id, email, password, name, created_at, updated_at FROM users WHERE id = $1`
+	queryRow := r.db.QueryRow(ctx, query, id)
+	user := &models.User{}
 	err := queryRow.Scan(&user.ID, &user.Email, &user.Password, &user.Name, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
