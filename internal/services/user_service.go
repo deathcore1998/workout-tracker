@@ -5,15 +5,14 @@ import (
 	"fmt"
 
 	"github.com/deathcore1998/workout-tracker/internal/models"
-	"github.com/deathcore1998/workout-tracker/internal/repositories"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
-	repo *repositories.UserRepository
+	repo UserRepository
 }
 
-func NewUserService(repo *repositories.UserRepository) *UserService {
+func NewUserService(repo UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
@@ -39,7 +38,7 @@ func (s *UserService) Register(ctx context.Context, email, password, name string
 
 func (s *UserService) Login(ctx context.Context, email, password string) (*models.User, error) {
 	user, err := s.repo.GetByEmail(ctx, email)
-	if err != nil {
+	if err != nil || user == nil {
 		return nil, fmt.Errorf("invalid credentials")
 	}
 
