@@ -1,0 +1,56 @@
+### Переменные
+@baseUrl = http://localhost:8080
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3OTM4MTgzNTAsImlhdCI6MTc5MzczMTk1MH0.uCbYOQ741BdB1FBXZPeTRmYJ1LRqIMoehMZReT_hSVE
+
+### Register
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "email": "deathcore@mail.com",
+    "password": "test123",
+    "name": "Deathcore"
+}
+
+### Login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "deathcore@mail.com",
+  "password": "test123"
+}
+
+### Create workout
+POST {{baseUrl}}/workouts
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Трицепс",
+  "date": "2026-11-03T10:00:00Z",
+  "notes": "Тяжело"
+}
+
+### List
+GET {{baseUrl}}/workouts
+Authorization: Bearer {{token}}
+
+### Get
+GET {{baseUrl}}/workouts/1
+Authorization: Bearer {{token}}
+
+### Update
+PUT {{baseUrl}}/workouts/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Ноги",
+  "date": "2026-11-03T10:00:00Z",
+  "notes": "Очень тяжело"
+}
+
+### Delete
+DELETE {{baseUrl}}/workouts/1
+Authorization: Bearer {{token}}
