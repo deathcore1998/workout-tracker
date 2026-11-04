@@ -4,14 +4,13 @@ import (
 	"context"
 
 	"github.com/deathcore1998/workout-tracker/internal/models"
-	"github.com/deathcore1998/workout-tracker/internal/repositories"
 )
 
 type WorkoutService struct {
-	repo *repositories.WorkoutRepository
+	repo WorkoutRepository
 }
 
-func NewWorkoutService(repo *repositories.WorkoutRepository) *WorkoutService {
+func NewWorkoutService(repo WorkoutRepository) *WorkoutService {
 	return &WorkoutService{repo: repo}
 }
 
