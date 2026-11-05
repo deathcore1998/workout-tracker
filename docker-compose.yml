@@ -10,6 +10,24 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U workout"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: workout-api
+    environment:
+      DATABASE_URL: postgres://workout:secret@postgres:5432/workout?sslmode=disable
+      SERVER_PORT: 8080
+      JWT_SECRET: K7x9mP2qR5vN8wL3jH6tY1bC4dF0gS5a
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
