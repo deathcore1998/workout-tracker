@@ -19,9 +19,9 @@ func NewUserHandler(service *services.UserService, jwtSecret string) *UserHandle
 }
 
 type RegisterRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
+	Name     string `json:"name" validate:"required,min=2"`
 }
 
 type LoginRequest struct {
@@ -40,8 +40,17 @@ func (h *UserHandler) Register(writer http.ResponseWriter, clientData *http.Requ
 		return
 	}
 
+	if !validateRequest(writer, req) {
+		return
+	}
+
 	user, err := h.service.Register(clientData.Context(), req.Email, req.Password, req.Name)
 	if err != nil {
+		if err.Error() == "email already exists" {
+			http.Error(writer, "email already exists", http.StatusConflict)
+			return
+		}
+
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}

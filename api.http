@@ -1,14 +1,14 @@
 ### Переменные
 @baseUrl = http://localhost:8080
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJleHAiOjE3OTM4MTgzNTAsImlhdCI6MTc5MzczMTk1MH0.uCbYOQ741BdB1FBXZPeTRmYJ1LRqIMoehMZReT_hSVE
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2LCJleHAiOjE3OTQ5NDMwMjUsImlhdCI6MTc5NDg1NjYyNX0.T6qd6EBqCSbPgZ5awbJMK-egw4QF1797ccDf8mEGfew
 
 ### Register
 POST {{baseUrl}}/register
 Content-Type: application/json
 
 {
-    "email": "deathcore@mail.com",
-    "password": "test123",
+    "email": "deathcore2@mail.com",
+    "password": "test12345",
     "name": "Deathcore"
 }
 
@@ -17,8 +17,8 @@ POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-  "email": "deathcore@mail.com",
-  "password": "test123"
+  "email": "deathcore2@mail.com",
+  "password": "test12345"
 }
 
 ### Create workout

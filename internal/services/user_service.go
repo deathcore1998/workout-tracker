@@ -17,6 +17,11 @@ func NewUserService(repo UserRepository) *UserService {
 }
 
 func (s *UserService) Register(ctx context.Context, email, password, name string) (*models.User, error) {
+	existing, err := s.repo.GetByEmail(ctx, email)
+	if err == nil && existing != nil {
+		return nil, fmt.Errorf("email already exists")
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("hash password %w", err)
