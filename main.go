@@ -4,17 +4,29 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/deathcore1998/workout-tracker/internal/config"
 	"github.com/deathcore1998/workout-tracker/internal/database"
 	"github.com/deathcore1998/workout-tracker/internal/handlers"
+	"github.com/deathcore1998/workout-tracker/internal/logger"
 	"github.com/deathcore1998/workout-tracker/internal/middleware"
 	"github.com/deathcore1998/workout-tracker/internal/repositories"
 	"github.com/deathcore1998/workout-tracker/internal/services"
 )
 
 func main() {
+
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "development"
+	}
+
+	logger.Setup(env)
+	slog.Info("starting workout-tracker API", "env", env)
+
 	ctx := context.Background()
 	cfg := config.Load()
 	pool, err := database.Connect(ctx, cfg.DatabaseURL)
@@ -46,7 +58,9 @@ func main() {
 	mux.Handle("DELETE /workouts/{id}", authMiddleware(http.HandlerFunc(workoutHandler.Delete)))
 
 	fmt.Printf("Server running on http://localhost: %s\n", cfg.ServerPort)
-	if err := http.ListenAndServe(":"+cfg.ServerPort, mux); err != nil {
+
+	loggedMux := middleware.Logger(mux)
+	if err := http.ListenAndServe(":"+cfg.ServerPort, loggedMux); err != nil {
 		log.Fatalf("Server error: %v", err)
 	}
 }
